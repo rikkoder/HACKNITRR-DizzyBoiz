@@ -1,4 +1,3 @@
-# import json
 import os
 import requests
 import bs4
@@ -6,8 +5,8 @@ import lxml
 from datetime import date
 
 
-JSONBLOB = os.environ.get('JSONBLOB')
-# JSONBLOB = 'https://jsonblob.com/api/jsonBlob/949564659619610624'
+# JSONBLOB = os.environ.get('JSONBLOB')
+JSONBLOB = 'https://jsonblob.com/api/jsonBlob/949564659619610624'
 
 # retriving the json data from jsonblob
 def get_json():
@@ -40,8 +39,8 @@ def updating_json(i, soup, notice_json):
 
     for j in range(i-1, -1, -1):
 
-        heading = soup.select('#menu2')[0].select('a')[i].getText()
-        link = soup.select('#menu2')[0].select('a')[i]['href'].replace(
+        heading = soup.select('#menu2')[0].select('a')[j].getText()
+        link = soup.select('#menu2')[0].select('a')[j]['href'].replace(
             "downloads/", "http://www.nitrr.ac.in/downloads/")
 
         temp = {
@@ -58,32 +57,24 @@ def updating_json(i, soup, notice_json):
 #should be run in regular intervals to check updates
 def for_notices():
     notice_json = get_json()
-#     if not '0' in notice_json:
-#         notice_json = json.loads(request.POST.get('mydata', '{}'))
-
-    print('type of json', type(notice_json))
-
     response = requests.get("http://www.nitrr.ac.in/acad_downloads.php")
     soup = bs4.BeautifulSoup(response.text, "lxml")
 
     length = len(soup.select('#menu2')[0].select('a'))
 
-#     if not '0' in notice_json:
-    if len(notice_json) == 0:
-        return updating_json(length-1, soup, notice_json)
-
-    elif(soup.select('#menu2')[0].select('a')[0].getText() == notice_json[0]['heading']):
+    if(soup.select('#menu2')[0].select('a')[0].getText() == notice_json[0]['heading']):
         return []
 
-    for i in range(length):
-        heading = soup.select('#menu2')[0].select('a')[i].getText()
+    else:
+        for i in range(length):
+            heading = soup.select('#menu2')[0].select('a')[i].getText()
+            if(heading == notice_json[0]['heading']):
+                new_notices = updating_json(i, soup, notice_json)
+                print("updates")
+                return(new_notices)
 
-        if(heading == notice_json[0]['heading']):
-            new_notices = updating_json(i, soup, notice_json)
-            return(new_notices)
 
-
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     
     today_date = date.today().strftime('%d-%m-%Y')
     kek = for_notices()
@@ -96,4 +87,4 @@ if __name__ == "__main__":
             {kek[i]['heading']}
             {kek[i]['link']}
             {today_date}
-            '''
+            ''' """

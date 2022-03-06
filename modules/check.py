@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import CallbackContext
+from telegram.utils.helpers import escape_markdown
 
 # adding rootdir to path
 import sys, os.path as path
@@ -9,7 +10,7 @@ from lib.scrapper import for_notices
 
 def run(update: Update, context: CallbackContext) -> None:
     result = for_notices()
-#     print(result)
+
     if len(result) == 0:
         update.message.reply_text('No new updates!')
         return;
@@ -18,28 +19,11 @@ def run(update: Update, context: CallbackContext) -> None:
     found = 0
     for notice in result:
         found+=1
-        title = data[i]['heading']
-        print(title)
-        title = title.replace('`', '\`')
-        title = title.replace('*', '\*')
-        title = title.replace('_', '\_')
-        title = title.replace('{', '\{')
-        title = title.replace('}', '\}')
-        title = title.replace('[', '\[')
-        title = title.replace(']', '\]')
-        title = title.replace('<', '\<')
-        title = title.replace('>', '\>')
-        title = title.replace('(', '\(')
-        title = title.replace(')', '\)')
-        title = title.replace('#', '\#')
-        title = title.replace('+', '\+')
-        title = title.replace('-', '\-')
-        title = title.replace('.', '\.')
-        title = title.replace('!', '\!')
-        title = title.replace('|', '\|')
-        print(title)
-        link = data[i]['link']
-        link = link.split()[0]
-        msg += f'\n{found}. [{title}]({link})'
+        title = notice['heading']
+        title = escape_markdown(title, version=2)
+        link = notice['link']
+        link.replace(' ', '%20')
+        link = escape_markdown(link, version=2)
+        msg += f'\n{found}\. [{title}]({link})\n'
 
     update.message.reply_markdown_v2(msg)

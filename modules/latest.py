@@ -1,5 +1,7 @@
 from telegram import Update
 from telegram.ext import CallbackContext
+from telegram.utils.helpers import escape_markdown
+from telegram import ParseMode
 
 # adding rootdir to path
 import sys, os.path as path
@@ -16,7 +18,7 @@ def run(update: Update, context: CallbackContext) -> None:
 
     count = 5
     if len(context.args) != 0 and context.args[0].isnumeric():
-        count = context.args[0]
+        count = int(context.args[0])
 
     found = 0
     msg = ''
@@ -25,28 +27,11 @@ def run(update: Update, context: CallbackContext) -> None:
             break
         found+=1
         title = data[i]['heading']
-        print(title)
-        title = title.replace('`', '\`')
-        title = title.replace('*', '\*')
-        title = title.replace('_', '\_')
-        title = title.replace('{', '\{')
-        title = title.replace('}', '\}')
-        title = title.replace('[', '\[')
-        title = title.replace(']', '\]')
-        title = title.replace('<', '\<')
-        title = title.replace('>', '\>')
-        title = title.replace('(', '\(')
-        title = title.replace(')', '\)')
-        title = title.replace('#', '\#')
-        title = title.replace('+', '\+')
-        title = title.replace('-', '\-')
-        title = title.replace('.', '\.')
-        title = title.replace('!', '\!')
-        title = title.replace('|', '\|')
-        print(title)
+        title = escape_markdown(title, version=2)
         link = data[i]['link']
-        link = link.split()[0]
-        msg += f'\n{i+1}. [{title}]({link})'
+        link = link.replace(' ', '%20')
+        link = escape_markdown(link, version=2)
+        msg += f'\n{i+1}\. [{title}]({link})\n'
 
     msg = f'{found} LATEST UPDATES :\n' + msg
 
