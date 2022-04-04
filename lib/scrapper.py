@@ -5,8 +5,7 @@ import lxml
 from datetime import date
 
 
-# JSONBLOB = os.environ.get('JSONBLOB')
-JSONBLOB = 'https://jsonblob.com/api/jsonBlob/949564659619610624'
+JSONBLOB = os.environ.get('JSONBLOB')
 
 # retriving the json data from jsonblob
 def get_json():
@@ -70,21 +69,4 @@ def for_notices():
             heading = soup.select('#menu2')[0].select('a')[i].getText()
             if(heading == notice_json[0]['heading']):
                 new_notices = updating_json(i, soup, notice_json)
-                print("updates")
                 return(new_notices)
-
-
-""" if __name__ == "__main__":
-    
-    today_date = date.today().strftime('%d-%m-%Y')
-    kek = for_notices()
-    
-    if len(kek) == 0:
-        print("\nNo new updates for now!")
-    else:
-        for i in range(len(kek)):
-            text = f'''
-            {kek[i]['heading']}
-            {kek[i]['link']}
-            {today_date}
-            ''' """
