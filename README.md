@@ -12,6 +12,7 @@ TOKEN : get bot token from BotFather(https://t.me/BotFather)
 JSONBLOB, CHATIDBLOB : get from https://jsonblob.com/api
 
 (local machine) you can run the bot on your machine by changing the following line (in nitrr_updatebot.py)
+
 	from
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN, webhook_url=f"{herokuAppLink}{TOKEN}")
 
